@@ -1,0 +1,23 @@
+
+.container {
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+/*.3d-environment {
+  /* Styles for the 3D environment */
+/*}
+
+.chat-interface {
+  /* Styles for the chat interface */
+/*}
+
+/* Add more styles for additional virtual environment components as needed */

@@ -1,0 +1,47 @@
+pragma solidity ^0.8.0;
+
+import "./EventContract.sol";
+
+contract TicketContract {
+    struct Ticket {
+        uint256 ticketId;
+        uint256 eventId;
+        address owner;
+        // Add more ticket-related variables
+    }
+
+    mapping(uint256 => Ticket) public tickets;
+    uint256 public ticketCount;
+
+    EventContract public eventContract;
+
+    constructor(address _eventContractAddress) {
+        eventContract = EventContract(_eventContractAddress);
+    }
+
+    function createTicket(uint256 _eventId) external returns (uint256) {
+        require(eventContract.eventExists(_eventId), "Event does not exist");
+
+        // Generate a unique ticket ID
+        uint256 ticketId = ticketCount++;
+
+        // Create a new ticket with the given ID, event ID, and the caller's address as the owner
+        tickets[ticketId] = Ticket(ticketId, _eventId, msg.sender);
+
+        // Increment the ticket count
+        ticketCount++;
+
+        return ticketId;
+    }
+
+    function transferTicket(uint256 _ticketId, address _newOwner) external {
+        require(tickets[_ticketId].owner == msg.sender, "You are not the owner of this ticket");
+
+        // Update the owner of the ticket to the new owner's address
+        tickets[_ticketId].owner = _newOwner;
+    }
+
+    // Add more ticket-related functions as needed
+
+    // ...
+}

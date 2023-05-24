@@ -1,0 +1,60 @@
+pragma solidity ^0.8.0;
+
+contract EventManagement {
+    struct Event {
+        uint256 eventId;
+        string name;
+        string description;
+        uint256 ticketPrice;
+        address organizer;
+        bool active;
+        // Add more event-related variables
+    }
+
+    mapping(uint256 => Event) public events;
+    uint256 public eventCount;
+
+    event EventCreated(uint256 eventId, string name, address organizer);
+    event EventUpdated(uint256 eventId, string name);
+    event EventCancelled(uint256 eventId, string name);
+
+    modifier onlyOrganizer(uint256 _eventId) {
+        require(events[_eventId].organizer == msg.sender, "Only the event organizer can perform this operation");
+        _;
+    }
+
+    function createEvent(string memory _name, string memory _description, uint256 _ticketPrice) external {
+        uint256 eventId = eventCount++;
+
+        events[eventId] = Event(
+            eventId,
+            _name,
+            _description,
+            _ticketPrice,
+            msg.sender,
+            true
+        );
+
+        emit EventCreated(eventId, _name, msg.sender);
+    }
+
+    function updateEvent(uint256 _eventId, string memory _name, string memory _description, uint256 _ticketPrice) external onlyOrganizer(_eventId) {
+        Event storage eventObj = events[_eventId];
+        eventObj.name = _name;
+        eventObj.description = _description;
+        eventObj.ticketPrice = _ticketPrice;
+
+        emit EventUpdated(_eventId, _name);
+    }
+
+    function cancelEvent(uint256 _eventId) external onlyOrganizer(_eventId) {
+        Event storage eventObj = events[_eventId];
+        eventObj.active = false;
+
+        emit EventCancelled(_eventId, eventObj.name);
+    }
+
+    // Add more event-related functions as needed
+
+    // ...
+}
